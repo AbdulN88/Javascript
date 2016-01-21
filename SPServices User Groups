@@ -1,0 +1,58 @@
+var inGroup = false;
+var inGroupTeam1 = false;
+var inGroupTeam2 = false;
+var groupCheck = false;
+
+function isMemberUserOfGroup() {
+	if (groupCheck == false) {
+
+		$().SPServices({
+	    	operation: "GetGroupCollectionFromUser",
+	    	userLoginName: $().SPServices.SPGetCurrentUser(),
+	        async: false,
+	        completefunc: function(xData, Status) {
+	            $(xData.responseXML).find("Group[Name]").each(function(e) {
+	            
+	            	if ($(this).attr("Name").indexOf("Team2") > -1) {
+	            		inGroup = true;
+	            	}
+	            	
+	            	if ($(this).attr("Name").indexOf("Team1")  > -1) {
+	            		inGroup = true;
+	            	}
+	            
+				});
+			}
+		});
+	
+	}
+	
+	groupCheck = true;
+	return inGroup;
+}
+$(document).ready(function() {
+	$().SPServices({
+	operation: "GetListItems",
+	async: true,
+	listName: "listName",
+	viewName: "",
+	rowLimit: "",
+	CAMLViewFields: "<ViewFields>"<FieldRef Name=\"#\" /></ViewFields>",
+	completefunc: function (xData, Status)
+	{
+		$(xData.responseXML).SPFilterNode("z:row").each(function()
+		{
+			isMemberUserOfGroup();
+			var allItems = $(this).attr("ows_#");
+			
+			if (inGroupTeam1 == true && inGroupTeam2 == true) {
+				$(DIV Element).css("display", "none");
+				}
+			else {
+				$(DIV Element).css("display", "block");
+			}
+		});
+	}
+	});
+});
+	
